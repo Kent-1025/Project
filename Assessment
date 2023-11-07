@@ -1,0 +1,60 @@
+Q1.
+const express = require('express');
+const app = express();
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+const users = [
+  { username: 'kent', password: '123' },
+];
+
+app.post('/login', (req, res) => {
+
+  const { username, password } = req.body;
+  const user = users.find((u) => u.username === username && u.password === password);
+  
+  if (user) {
+    res.status(200).json({ message: 'Login successful' });
+  } else {
+    res.status(401).json({ message: 'Invalid credentials' });
+  }
+});
+
+Q2.
+const users = {
+  username: 'admin',
+  password: 'adminpassword',
+  role: 'admin',
+};
+
+Q3.
+app.post('/register', (req, res) => {
+  const { username, password, name, birthdate, address } = req.body;
+
+  users.push({ username, password, name, birthdate, address});
+
+  res.status(201).json({ message: 'User registered' });
+});
+
+Q4.
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
+
+const doc = new PDFDocument();
+doc.pipe(fs.createWriteStream('members.pdf'));
+
+doc.fontSize(15).text('Member Details', { align: 'left' });
+
+const memberDetails = [
+  { name: 'Kent', birthdate: '2002-10-25', address: 'Address1' },
+];
+
+memberDetails.forEach((member) => {
+  doc.fontSize(12).text(`Name: ${member.name}`);
+  doc.fontSize(12).text(`Birthdate: ${member.birthdate}`);
+  doc.fontSize(12).text(`Address: ${member.address}`);
+  doc.moveDown();
+});
+
+doc.end();
